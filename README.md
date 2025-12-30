@@ -23,7 +23,7 @@ Usage: syno.dailypass.sh [-d [MM/DD | -y [YYYY]] [-h]
     -d, --day MM/DD                  Print the password for today or the next
                                      occurrence of MM/DD
     -y, --year YYYY                  Print all passwords for the year or a
-                                     specific year
+                                     specific YYYY 
     -h, --help                       Print this help text and exit
 ```
 
