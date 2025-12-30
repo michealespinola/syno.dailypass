@@ -4,7 +4,7 @@
 # bash /volume1/homes/admin/scripts/bash/syno.dailypass.sh
 
 set -u
-SCRIPT_VERSION=1.0.0
+SCRIPT_VERSION=1.1.0
 
 get_source_info() {                                                                               # FUNCTION TO GET SOURCE SCRIPT INFORMATION
   srcScrpVer=${SCRIPT_VERSION}                                                                    # Source script version
@@ -124,16 +124,20 @@ print_help_wrap() { # <resume_col> <right_margin> <left_text> <right_text>      
     awk -v col="$resume_col" '{ printf "%*s%s\n", col, "", $0 }' >&2                              # Indent to resume column
 }
 
+print_username_hint() {
+  printf '%16s %s\n' 'access:' 'telnet port 23'
+  printf '%16s %s\n' 'username:' 'root or admin'
+}
 print_reset_hint() {
   printf '%16s %x%02d-%02x%02d (if date reset)\n\n' \
-    "$(printf 'password:')" "01" "01" "01" "$(gcd "01" "01")"
+    "$(printf ' ')" "01" "01" "01" "$(gcd "01" "01")"
 }
 
 usage() {
   printf 'Usage: %s [-d [MM/DD | -y [YYYY]] [-h]\n\n' "$srcFileNam" >&2
   printf '  Options:\n\n' >&2
   print_help_wrap 37 2 "-d, --day MM/DD"  "Print the password for today or the next occurrence of MM/DD"
-  print_help_wrap 37 2 "-y, --year YYYY"  "Print all passwords for the year or a specific year"
+  print_help_wrap 37 2 "-y, --year YYYY"  "Print all passwords for the year or a specific YYYY"
   print_help_wrap 37 2 "-h, --help"       "Print this help text and exit"
   printf '\n' >&2
   exit 2
@@ -200,6 +204,7 @@ if [[ $mode == "day" ]]; then
   IFS='-' read -r _ mm dd <<<"$start_iso"
   month=$((10#$mm))
   day=$((10#$dd))
+  print_username_hint
   print_password_for_mm_dd "$month" "$day"
   print_reset_hint
   exit 0
@@ -208,6 +213,8 @@ fi
 if [[ $mode == "year" ]]; then
   start_iso="${year_arg}-01-01"
   limit=$(days_in_year "$year_arg")
+
+print_username_hint
 
   for ((i=0; i<limit; i++)); do
     mm_dd=$(mm_dd_from_base_plus_offset "$start_iso" "$i") || {
