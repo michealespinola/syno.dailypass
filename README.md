@@ -2,19 +2,19 @@
 
 A bash script that deterministically computes and prints the Synology daily telnet recovery password for a given date or year. It supports generating the password for a single day or for every day in a full calendar year, using only the calendar date and a fixed algorithm. The script is fully self-contained and performs no access or system modifications.
 
-## Purpose
+### Purpose
 
 This script exists to reproduce the Synology daily recovery password locally and on demand, without relying on external services or support channels via Synology. It is intended for legitimate administrative and recovery scenarios where you already have authorized access to the system and need to compute the daily password for a known date.
 
 * It's only purpose and use is while attempting to access the DSM in a pre-configuration or recovery mode.
 
-## Requirements
+### Requirements
 
 - Bash
 - Standard Unix utilities: `date`, `printf`, `awk`, `sed`, `fold`, `stty`
 - Should work on any linux-type systems
 
-## Usage
+### Usage
 
 ```
 Usage: syno.dailypass.sh [-d [MM/DD | -y [YYYY]] [-h]
@@ -28,7 +28,7 @@ Usage: syno.dailypass.sh [-d [MM/DD | -y [YYYY]] [-h]
     -h, --help                       Print this help text and exit
 ```
 
-## Utilization and example output
+### Utilization and example output
 
 ```
 # bash syno.dailypass.sh -d
