@@ -10,8 +10,7 @@ This script exists to reproduce the Synology daily recovery password locally and
 
 ### Requirements
 
-- Bash
-- Standard Unix utilities: `date`, `printf`, `awk`, `sed`, `fold`, `stty`
+- Standard linux utilities: `date`, `printf`, `awk`, `sed`, `fold`, `stty`
 - Should work on any linux-type systems
 
 ### Usage
