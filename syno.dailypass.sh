@@ -4,7 +4,7 @@
 # bash /volume1/homes/admin/scripts/bash/syno.dailypass.sh
 
 set -u
-SCRIPT_VERSION=1.0.1
+SCRIPT_VERSION=1.1.1
 
 get_source_info() {                                                                               # FUNCTION TO GET SOURCE SCRIPT INFORMATION
   srcScrpVer=${SCRIPT_VERSION}                                                                    # Source script version
