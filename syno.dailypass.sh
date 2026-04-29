@@ -4,7 +4,7 @@
 # bash /volume1/homes/admin/scripts/bash/syno.dailypass.sh
 
 set -u
-SCRIPT_VERSION=1.1.1
+SCRIPT_VERSION=1.2.0
 
 get_source_info() {                                                                               # FUNCTION TO GET SOURCE SCRIPT INFORMATION
   srcScrpVer=${SCRIPT_VERSION}                                                                    # Source script version
@@ -18,19 +18,28 @@ printf "\n%s\n\n" "SYNO DAILY TELNET PASSWORD SCRIPT v$srcScrpVer"              
 
 gcd() {                                                                                           # FUNCTION TO GET ITERATIVE EUCLIDEAN ALGORITHM (GREATEST COMMON DIVISOR)
   local a=$1 b=$2 t
-  while (( b )); do
-    t=$(( a % b ))
+  while ((b)); do
+    t=$((a % b))
     a=$b
     b=$t
   done
-  printf '%d' "$a"
+  gcdResult=$a
+}
+
+format_password_for_mm_dd() {                                                                     # Inputs: month day (decimal integers)
+  local month=$1 day=$2 label
+
+  printf -v label '%02d/%02d password:' "$month" "$day"
+  gcd "$month" "$day"
+
+  printf -v passwordLine '%16s %x%02d-%02x%02d\n' \
+    "$label" \
+    "$month" "$month" "$day" "$gcdResult"
 }
 
 print_password_for_mm_dd() {                                                                      # Inputs: month day (decimal integers)
-  local month=$1 day=$2
-  printf '%16s %x%02d-%02x%02d\n' \
-    "$(printf '%02d/%02d password:' "$month" "$day")" \
-    "$month" "$month" "$day" "$(gcd "$month" "$day")"
+  format_password_for_mm_dd "$1" "$2"
+  printf '%s' "$passwordLine"
 }
 
 is_gnu_date() {
@@ -67,6 +76,27 @@ mm_dd_from_base_plus_offset() {                                                 
   else
     date -j -f '%Y-%m-%d' "$base_iso" -v +"${offset}"d '+%m %d'
   fi
+}
+
+print_passwords_for_year() {                                                                      # Input: YYYY
+  local year=$1 month day maxDay
+  local output=""
+  local -a monthDays=(0 31 28 31 30 31 30 31 31 30 31 30 31)
+
+  if is_leap_year "$year"; then
+    monthDays[2]=29
+  fi
+
+  for ((month = 1; month <= 12; month++)); do
+    maxDay=${monthDays[month]}
+
+    for ((day = 1; day <= maxDay; day++)); do
+      format_password_for_mm_dd "$month" "$day"
+      output+=$passwordLine
+    done
+  done
+
+  printf '%s' "$output"
 }
 
 resolve_start_iso_from_mmdd() {                                                                   # Input: MM/DD
@@ -128,9 +158,11 @@ print_username_hint() {
   printf '%16s %s\n' 'access:' 'telnet port 23'
   printf '%16s %s\n' 'username:' 'root or admin'
 }
+
 print_reset_hint() {
+  gcd 1 1
   printf '%16s %x%02d-%02x%02d (if date reset)\n\n' \
-    "$(printf ' ')" "01" "01" "01" "$(gcd "01" "01")"
+    ' ' "01" "01" "01" "$gcdResult"
 }
 
 usage() {
@@ -211,20 +243,8 @@ if [[ $mode == "day" ]]; then
 fi
 
 if [[ $mode == "year" ]]; then
-  start_iso="${year_arg}-01-01"
-  limit=$(days_in_year "$year_arg")
-
-print_username_hint
-
-  for ((i=0; i<limit; i++)); do
-    mm_dd=$(mm_dd_from_base_plus_offset "$start_iso" "$i") || {
-      printf 'Error: unsupported "date" implementation on this system.\n' >&2
-      exit 1
-    }
-    IFS=' ' read -r mm dd <<<"$mm_dd"
-    print_password_for_mm_dd $((10#$mm)) $((10#$dd))
-  done
-
+  print_username_hint
+  print_passwords_for_year "$year_arg"
   print_reset_hint
   exit 0
 fi
