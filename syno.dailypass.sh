@@ -4,7 +4,7 @@
 # bash /volume1/homes/admin/scripts/bash/syno.dailypass.sh
 
 set -u
-SCRIPT_VERSION=1.1.0
+SCRIPT_VERSION=1.0.1
 
 get_source_info() {                                                                               # FUNCTION TO GET SOURCE SCRIPT INFORMATION
   srcScrpVer=${SCRIPT_VERSION}                                                                    # Source script version
@@ -75,22 +75,22 @@ resolve_start_iso_from_mmdd() {                                                 
     return 1
   fi
 
-  local mm dd yyyy candi_date cand_epoch today_epoch
+  local mm dd yyyy candi_date candi_epoc todays_epoc
   mm=${mmdd%/*}
   dd=${mmdd#*/}
   yyyy=$(date +%Y)
   candi_date="${yyyy}-${mm}-${dd}"
-  cand_epoch=$(date_to_epoch "$candi_date" 2>/dev/null || true)                                    # Validate candidate date parses
-  [[ -n "$cand_epoch" ]] || return 1
+  candi_epoc=$(date_to_epoch "$candi_date" 2>/dev/null || true)                                    # Validate candidate date parses
+  [[ -n "$candi_epoc" ]] || return 1
 
-  today_epoch=$(date_to_epoch "$(date +%Y-%m-%d)" 2>/dev/null || true)
-  [[ -n "$today_epoch" ]] || return 1
+  todays_epoc=$(date_to_epoch "$(date +%Y-%m-%d)" 2>/dev/null || true)
+  [[ -n "$todays_epoc" ]] || return 1
 
-  if (( cand_epoch < today_epoch )); then                                                         # If date already passed, roll to next year
+  if (( candi_epoc < todays_epoc )); then                                                         # If date already passed, roll to next year
     yyyy=$((yyyy + 1))
     candi_date="${yyyy}-${mm}-${dd}"
-    cand_epoch=$(date_to_epoch "$candi_date" 2>/dev/null || true)
-    [[ -n "$cand_epoch" ]] || return 1
+    candi_epoc=$(date_to_epoch "$candi_date" 2>/dev/null || true)
+    [[ -n "$candi_epoc" ]] || return 1
   fi
 
   printf '%s' "$candi_date"
@@ -134,7 +134,7 @@ print_reset_hint() {
 }
 
 usage() {
-  printf 'Usage: %s [-d [MM/DD | -y [YYYY]] [-h]\n\n' "$srcFileNam" >&2
+  printf 'Usage: %s [-d [MM/DD] | -y [YYYY]] [-h]\n\n' "$srcFileNam" >&2
   printf '  Options:\n\n' >&2
   print_help_wrap 37 2 "-d, --day MM/DD"  "Print the password for today or the next occurrence of MM/DD"
   print_help_wrap 37 2 "-y, --year YYYY"  "Print all passwords for the year or a specific YYYY"
