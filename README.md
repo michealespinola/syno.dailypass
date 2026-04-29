@@ -16,7 +16,7 @@ This script exists to reproduce the Synology daily recovery password locally and
 ### Usage
 
 ```
-Usage: syno.dailypass.sh [-d [MM/DD | -y [YYYY]] [-h]
+Usage: syno.dailypass.sh [-d [MM/DD] | -y [YYYY]] [-h]
 
   Options:
 
