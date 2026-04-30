@@ -20,11 +20,9 @@ Usage: syno.dailypass.sh [-d [MM/DD] | -y [YYYY]] [-h]
 
   Options:
 
-    -d, --day MM/DD                  Print the password for today or the next
-                                     occurrence of MM/DD
-    -y, --year YYYY                  Print all passwords for the year or a
-                                     specific YYYY 
-    -h, --help                       Print this help text and exit
+    -d, --day [MM/DD]    Print the password for today or next MM/DD
+    -y, --year [YYYY]    Print all passwords for the year or a specific YYYY
+    -h, --help           Print this help text and exit
 ```
 
 ### Utilization and example output
@@ -44,7 +42,7 @@ or...
 ```
 # bash syno.dailypass.sh -y
 
-SYNO DAILY TELNET PASSWORD SCRIPT v1.2.0
+SYNO DAILY TELNET PASSWORD SCRIPT v1.2.1
 
          access: telnet port 23
        username: root or admin
