@@ -30,13 +30,12 @@ Usage: syno.dailypass.sh [-d [MM/DD] | -y [YYYY]] [-h]
 ```
 # bash syno.dailypass.sh -d
 
-SYNO DAILY TELNET PASSWORD SCRIPT v1.2.0
+SYNO DAILY TELNET PASSWORD SCRIPT v1.2.1
 
          access: telnet port 23
        username: root or admin
- 12/29 password: c12-1d01
+ 04/30 password: 404-1e02
                  101-0101 (if date reset)
-
 ```
 or...
 ```
