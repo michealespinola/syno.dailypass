@@ -4,7 +4,7 @@
 # bash /volume1/homes/admin/scripts/bash/syno.dailypass.sh
 
 set -u
-SCRIPT_VERSION=1.2.0
+SCRIPT_VERSION=1.2.1
 
 get_source_info() {                                                                               # FUNCTION TO GET SOURCE SCRIPT INFORMATION
   srcScrpVer=${SCRIPT_VERSION}                                                                    # Source script version
@@ -140,22 +140,29 @@ get_term_cols() {                                                               
   printf '80\n'                                                                                   # 3) Standard fallback
 }
 
-print_help_wrap() { # <resume_col> <right_margin> <left_text> <right_text>                        # FUNCTION TO PRINT WRAPPED HELP LINE
+print_help_wrap() { # <resume_col> <right_margin> <left_text> <right_text>
   local resume_col=$1
   local right_margin=$2
-  local cols wrap wrapped
+  local cols wrap wrapped text_col
+
   cols=$(get_term_cols)
-  wrap=$(( cols - right_margin - resume_col ))
-  (( wrap < 20 )) && wrap=20                                                                      # Sanity floor
+  text_col=$((resume_col + 1))
+  wrap=$((cols - right_margin - text_col))
+  ((wrap < 20)) && wrap=20
+
   wrapped=$(printf '%s\n' "$4" | fold -s -w "$wrap")
-  printf '    %-32s %s\n' "$3" "$(printf '%s\n' "$wrapped" | sed -n '1p')" >&2                    # First line: left column + first wrapped line
-  printf '%s\n' "$wrapped" |                                                                      # Continuation lines:
-    sed -n '2,$p' |                                                                               # Right margin wrap
-    awk -v col="$resume_col" '{ printf "%*s%s\n", col, "", $0 }' >&2                              # Indent to resume column
+
+  printf '%-'"$resume_col"'s %s\n' \
+    "$3" \
+    "$(printf '%s\n' "$wrapped" | sed -n '1p')" >&2
+
+  printf '%s\n' "$wrapped" |
+    sed -n '2,$p' |
+    awk -v col="$text_col" '{ printf "%*s%s\n", col, "", $0 }' >&2
 }
 
 print_username_hint() {
-  printf '%16s %s\n' 'access:' 'telnet port 23'
+  printf '%16s %s\n'   'access:' 'telnet port 23'
   printf '%16s %s\n' 'username:' 'root or admin'
 }
 
@@ -168,9 +175,9 @@ print_reset_hint() {
 usage() {
   printf 'Usage: %s [-d [MM/DD] | -y [YYYY]] [-h]\n\n' "$srcFileNam" >&2
   printf '  Options:\n\n' >&2
-  print_help_wrap 37 2 "-d, --day MM/DD"  "Print the password for today or the next occurrence of MM/DD"
-  print_help_wrap 37 2 "-y, --year YYYY"  "Print all passwords for the year or a specific YYYY"
-  print_help_wrap 37 2 "-h, --help"       "Print this help text and exit"
+  print_help_wrap 24 2 "    -d, --day [MM/DD]"  "Print the password for today or next MM/DD"
+  print_help_wrap 24 2 "    -y, --year [YYYY]"  "Print all passwords for the year or a specific YYYY"
+  print_help_wrap 24 2 "    -h, --help"         "Print this help text and exit"
   printf '\n' >&2
   exit 2
 }
