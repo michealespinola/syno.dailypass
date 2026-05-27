@@ -47,9 +47,9 @@ SYNO DAILY TELNET PASSWORD SCRIPT v1.3.0
 
 or...
 
-```
-
 #### Passwords for the year
+
+```
 
 # bash syno.dailypass.sh -y
 
