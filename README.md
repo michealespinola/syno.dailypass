@@ -29,6 +29,8 @@ Usage: syno.dailypass.sh [-d [MM/DD] | -y [YYYY] | -c <IPADDRESS>] [-h]
 
 ### Utilization and example output
 
+#### Password of the day
+
 ```
 # bash syno.dailypass.sh -d
 
@@ -46,6 +48,9 @@ SYNO DAILY TELNET PASSWORD SCRIPT v1.3.0
 or...
 
 ```
+
+#### Passwords for the year
+
 # bash syno.dailypass.sh -y
 
 SYNO DAILY TELNET PASSWORD SCRIPT v1.3.0
@@ -80,3 +85,7 @@ SYNO DAILY TELNET PASSWORD SCRIPT v1.3.0
  12/31 password: c12-1f01
                  101-0101 (Pre-Configure Mode)
 ```
+
+### Observation: Overkill
+
+Absolutely. This script is indeed overkill. Along with its very simplistic core feature of generating a code, I further developed this script as a testing and discovery platform for various coding and terminal issues that I was encountering in other scripts.
