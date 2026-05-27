@@ -60,32 +60,32 @@ SYNO DAILY TELNET PASSWORD SCRIPT v1.3.0
        Username: root
 
    Recovery Mode
- 01/01 password: 101-0101
- 01/02 password: 101-0201
- 01/03 password: 101-0301
- 01/04 password: 101-0401
- 01/05 password: 101-0501
- 01/06 password: 101-0601
- 01/07 password: 101-0701
- 01/08 password: 101-0801
- 01/09 password: 101-0901
- 01/10 password: 101-0a01
- 01/11 password: 101-0b01
+ Password 01/01: 101-0101
+ Password 01/02: 101-0201
+ Password 01/03: 101-0301
+ Password 01/04: 101-0401
+ Password 01/05: 101-0501
+ Password 01/06: 101-0601
+ Password 01/07: 101-0701
+ Password 01/08: 101-0801
+ Password 01/09: 101-0901
+ Password 01/10: 101-0a01
+ Password 01/11: 101-0b01
 [...]
- 12/21 password: c12-1503
- 12/22 password: c12-1602
- 12/23 password: c12-1701
- 12/24 password: c12-1812
- 12/25 password: c12-1901
- 12/26 password: c12-1a02
- 12/27 password: c12-1b03
- 12/28 password: c12-1c04
- 12/29 password: c12-1d01
- 12/30 password: c12-1e06
- 12/31 password: c12-1f01
+ Password 12/21: c12-1503
+ Password 12/22: c12-1602
+ Password 12/23: c12-1701
+ Password 12/24: c12-1812
+ Password 12/25: c12-1901
+ Password 12/26: c12-1a02
+ Password 12/27: c12-1b03
+ Password 12/28: c12-1c04
+ Password 12/29: c12-1d01
+ Password 12/30: c12-1e06
+ Password 12/31: c12-1f01
                  101-0101 (Pre-Configure Mode)
 ```
 
-### Observation: Overkill
+### Observation: This script is overkill
 
 Absolutely. This script is indeed overkill. Along with its very simplistic core feature of generating a code, I further developed this script as a testing and discovery platform for various coding and terminal issues that I was encountering in other scripts.
