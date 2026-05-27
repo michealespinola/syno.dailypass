@@ -16,12 +16,14 @@ This script exists to reproduce the Synology daily recovery password locally and
 ### Usage
 
 ```
-Usage: syno.dailypass.sh [-d [MM/DD] | -y [YYYY]] [-h]
+Usage: syno.dailypass.sh [-d [MM/DD] | -y [YYYY] | -c <IPADDRESS>] [-h]
 
   Options:
 
     -d, --day [MM/DD]    Print the password for today or next MM/DD
     -y, --year [YYYY]    Print all passwords for the year or a specific YYYY
+    -c, --connect <IP>   Print today's password, initiate telnet on the target
+                         NAS, and connect to it
     -h, --help           Print this help text and exit
 ```
 
@@ -30,21 +32,29 @@ Usage: syno.dailypass.sh [-d [MM/DD] | -y [YYYY]] [-h]
 ```
 # bash syno.dailypass.sh -d
 
-SYNO DAILY TELNET PASSWORD SCRIPT v1.2.1
+SYNO DAILY TELNET PASSWORD SCRIPT v1.3.0
 
-         access: telnet port 23
-       username: root or admin
- 04/30 password: 404-1e02
-                 101-0101 (if date reset)
+       Initiate: http://<IPADDRESS>:5000/webman/start_telnet.cgi
+         Access: telnet <IPADDRESS> 23
+       Username: root
+
+   Recovery Mode
+ Password 05/27: 505-1b01
+                 101-0101 (Pre-Configure Mode)
 ```
+
 or...
+
 ```
 # bash syno.dailypass.sh -y
 
-SYNO DAILY TELNET PASSWORD SCRIPT v1.2.1
+SYNO DAILY TELNET PASSWORD SCRIPT v1.3.0
 
-         access: telnet port 23
-       username: root or admin
+       Initiate: http://<IPADDRESS>:5000/webman/start_telnet.cgi
+         Access: telnet <IPADDRESS> 23
+       Username: root
+
+   Recovery Mode
  01/01 password: 101-0101
  01/02 password: 101-0201
  01/03 password: 101-0301
@@ -68,5 +78,5 @@ SYNO DAILY TELNET PASSWORD SCRIPT v1.2.1
  12/29 password: c12-1d01
  12/30 password: c12-1e06
  12/31 password: c12-1f01
-                 101-0101 (if date reset)
+                 101-0101 (Pre-Configure Mode)
 ```
