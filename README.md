@@ -34,7 +34,7 @@ Usage: syno.dailypass.sh [-d [MM/DD] | -y [YYYY] | -c <IPADDRESS>] [-h]
 ```
 # bash syno.dailypass.sh -d
 
-SYNO DAILY TELNET PASSWORD SCRIPT v1.3.0
+SYNO DAILY TELNET PASSWORD SCRIPT v1.4.0
 
        Initiate: http://<IPADDRESS>:5000/webman/start_telnet.cgi
          Access: telnet <IPADDRESS> 23
@@ -45,15 +45,13 @@ SYNO DAILY TELNET PASSWORD SCRIPT v1.3.0
                  101-0101 (Pre-Configure Mode)
 ```
 
-or...
-
 #### Passwords for the year
 
 ```
 
 # bash syno.dailypass.sh -y
 
-SYNO DAILY TELNET PASSWORD SCRIPT v1.3.0
+SYNO DAILY TELNET PASSWORD SCRIPT v1.4.0
 
        Initiate: http://<IPADDRESS>:5000/webman/start_telnet.cgi
          Access: telnet <IPADDRESS> 23
@@ -84,6 +82,52 @@ SYNO DAILY TELNET PASSWORD SCRIPT v1.3.0
  Password 12/30: c12-1e06
  Password 12/31: c12-1f01
                  101-0101 (Pre-Configure Mode)
+```
+
+#### Connecting to Recovery Mode telnet terminal
+
+```
+# bash syno.dailypass.sh -c <IPADDRESS>
+
+SYNO DAILY TELNET PASSWORD SCRIPT v1.4.0
+
+       Initiate: http://<IPADDRESS>:5000/webman/start_telnet.cgi
+         Access: telnet <IPADDRESS> 23
+       Username: root
+
+   Recovery Mode
+ Password 05/28: 505-1c01
+                 101-0101 (Pre-Configure Mode)
+
+    State Check: http://<IPADDRESS>:5000/webman/get_state.cgi
+       Response: JSON detected from /webman/get_state.cgi, model=DS923+,
+                 build=7.3.2-86009, has_disk=false, disk_count=0
+Recovery Webman: detected
+     Initiating: http://<IPADDRESS>:5000/webman/start_telnet.cgi
+       Response: {"success": true}
+     Connecting: telnet <IPADDRESS> 23
+
+Trying <IPADDRESS>...
+Connected to <IPADDRESS>.
+Escape character is '^]'.
+
+SynologyNAS login: root
+Password:
+
+Using terminal commands to modify system configs, execute external binary
+files, add files, or install unauthorized third-party apps may lead to system
+damages or unexpected behavior, or cause data loss. Make sure you are aware of
+the consequences of each command and proceed at your own risk.
+
+Warning: Data should only be stored in shared folders. Data stored elsewhere
+may be deleted when the system is updated/restarted.
+
+
+
+BusyBox v1.30.1 () built-in shell (ash)
+
+SynologyNAS> poweroff
+Connection closed by foreign host.
 ```
 
 ### Observation: This script is overkill
