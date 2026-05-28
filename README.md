@@ -2,6 +2,8 @@
 
 A bash script that deterministically computes and prints the Synology daily telnet recovery password for a given date or year. It supports generating the password for a single day or for every day in a full calendar year, using only the calendar date and a fixed algorithm. The script is fully self-contained and performs no access or system modifications.
 
+The script can also detect if Recovery Mode is running, automatically start the telnet daemon, and connect your client to the telnet port.
+
 ### Purpose
 
 This script exists to reproduce the Synology daily recovery password locally and on demand, without relying on external services or support channels via Synology. It is intended for legitimate administrative and recovery scenarios where you already have authorized access to the system and need to compute the daily password for a known date.
