@@ -4,7 +4,7 @@
 # bash /volume1/homes/admin/scripts/bash/syno.dailypass.sh
 
 set -u
-SCRIPT_VERSION=1.3.0
+SCRIPT_VERSION=1.4.0
 
 get_source_info() {                                                                               # FUNCTION TO GET SOURCE SCRIPT INFORMATION
   srcScrpVer=${SCRIPT_VERSION}                                                                    # Source script version
@@ -217,6 +217,75 @@ print_day_information() {                                                       
   print_reset_hint
 }
 
+looks_like_json() {                                                                                # Input: response body
+  local text=$1 compact
+
+  compact=$(printf '%s' "$text" | sed 's/^[[:space:]]*//')
+  [[ $compact == \{* || $compact == \[* ]]
+}
+
+summarize_recovery_state_response() {                                                              # Input: JSON response body
+  local response=$1 summary model build_ver disk_count has_disk
+
+  summary='JSON detected from /webman/get_state.cgi'
+
+  model=$(printf '%s\n' "$response" |
+    sed -n 's/.*"model"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p' |
+    sed -n '1p')
+  build_ver=$(printf '%s\n' "$response" |
+    sed -n 's/.*"build_ver"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p' |
+    sed -n '1p')
+  disk_count=$(printf '%s\n' "$response" |
+    sed -n 's/.*"disk_count"[[:space:]]*:[[:space:]]*\([0-9][0-9]*\).*/\1/p' |
+    sed -n '1p')
+  has_disk=$(printf '%s\n' "$response" |
+    sed -n 's/.*"has_disk"[[:space:]]*:[[:space:]]*\(true\|false\).*/\1/p' |
+    sed -n '1p')
+
+  [[ -n $model ]] && summary+=", model=${model}"
+  [[ -n $build_ver ]] && summary+=", build=${build_ver}"
+  [[ -n $has_disk ]] && summary+=", has_disk=${has_disk}"
+  [[ -n $disk_count ]] && summary+=", disk_count=${disk_count}"
+
+  printf '%s' "$summary"
+}
+
+check_recovery_webman() {                                                                          # Input: IPv4 address
+  local ip=$1 state_url response curlStatus label responseSummary successRe
+
+  command -v curl >/dev/null 2>&1 || {
+    printf 'Error: curl is required to check the recovery webman state.\n' >&2
+    return 1
+  }
+
+  state_url="http://${ip}:5000/webman/get_state.cgi"
+  printf -v label '%16s' 'State Check:'
+  print_help_wrap 16 2 "$label" "$state_url" 1
+
+  response=$(curl -fsS --connect-timeout 5 --max-time 10 "$state_url" 2>&1)
+  curlStatus=$?
+
+  if [[ -z $response ]] && (( curlStatus != 0 )); then
+    printf -v response 'curl exited with status %d' "$curlStatus"
+  fi
+
+  successRe='"success"[[:space:]]*:[[:space:]]*true'
+  if (( curlStatus == 0 )) && looks_like_json "$response" && [[ $response =~ $successRe ]]; then
+    responseSummary=$(summarize_recovery_state_response "$response")
+    printf -v label '%16s' 'Response:'
+    print_help_wrap 16 2 "$label" "$responseSummary" 1
+    printf -v label '%16s' 'Recovery Webman:'
+    print_help_wrap 16 2 "$label" 'detected' 1
+    return 0
+  fi
+
+  printf -v label '%16s' 'Response:'
+  print_help_wrap 16 2 "$label" "$response" 1
+  printf -v label '%16s' 'Recovery Webman:'
+  print_help_wrap 16 2 "$label" 'not confirmed; refusing to initiate telnet' 1
+  return 1
+}
+
 connect_to_nas_telnet() {                                                                         # Input: IPv4 address
   local ip=$1 initiate_url response curlStatus label
 
@@ -256,7 +325,7 @@ usage() {
   printf '  Options:\n\n' >&2
   print_help_wrap 24 2 "    -d, --day [MM/DD]"     "Print the password for today or next MM/DD"
   print_help_wrap 24 2 "    -y, --year [YYYY]"     "Print all passwords for the year or a specific YYYY"
-  print_help_wrap 24 2 "    -c, --connect <IP>"    "Print today's password, initiate telnet on the target NAS, and connect to it"
+  print_help_wrap 24 2 "    -c, --connect <IP>"    "Print today's password, confirm recovery webman, initiate telnet, and connect"
   print_help_wrap 24 2 "    -h, --help"            "Print this help text and exit"
   printf '\n' >&2
   exit 2
@@ -334,6 +403,7 @@ fi
 
 if [[ $mode == "connect" ]]; then
   print_day_information "" "$connect_ip" || exit 1
+  check_recovery_webman "$connect_ip" || exit 1
   connect_to_nas_telnet "$connect_ip"
   exit $?
 fi
